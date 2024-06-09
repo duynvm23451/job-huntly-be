@@ -1,19 +1,17 @@
 package com.phenikaa.jobhuntly.auth;
 
 import com.phenikaa.jobhuntly.entity.User;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
 
+@AllArgsConstructor
 public class AuthUser  implements UserDetails {
 
     private final User user;
-
-    public AuthUser(User user) {
-        this.user = user;
-    }
 
     public User getUser() {
         return user;
@@ -41,7 +39,7 @@ public class AuthUser  implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnable();
     }
 
     @Override
