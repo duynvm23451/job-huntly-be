@@ -1,6 +1,9 @@
 package com.phenikaa.jobhuntly.auth;
 
 import com.phenikaa.jobhuntly.repository.UserRepository;
+import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.core.Authentication;
@@ -16,21 +19,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.stream.Collectors;
 
 @Service
+@AllArgsConstructor
+@Slf4j
 public class AuthService {
-    private static final Logger log = LoggerFactory.getLogger(AuthService.class);
 
     private final JwtEncoder jwtEncoder;
-
-    private final PasswordEncoder passwordEncoder;
-
-    private final UserRepository userRepository;
-
-
-    public AuthService(JwtEncoder jwtEncoder, PasswordEncoder passwordEncoder, UserRepository userRepository) {
-        this.jwtEncoder = jwtEncoder;
-        this.passwordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
 
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
