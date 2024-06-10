@@ -9,6 +9,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -53,6 +54,12 @@ public class Job {
     @ManyToOne
     @JoinColumn(name="job_level_id")
     private JobLevel jobLevel;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Application> users;
+
+    @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<JobCategory> categories;
 
 
     @Column(name = "created_at", nullable = false, updatable = false)
