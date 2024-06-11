@@ -1,46 +1,53 @@
 package com.phenikaa.jobhuntly.auth;
 
+import com.phenikaa.jobhuntly.entity.User;
+import com.phenikaa.jobhuntly.mapper.AuthMapper;
 import com.phenikaa.jobhuntly.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j;
-import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtClaimsSet;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor
-@Slf4j
 public class AuthService {
 
-    private final JwtEncoder jwtEncoder;
+    private final JwtProvider jwtProvider;
+    private final AuthenticationManager authenticationManager;
+    private final UserRepository userRepository;
+    private final AuthMapper authMapper;
+    private final PasswordEncoder passwordEncoder;
 
-    public String generateToken(Authentication authentication) {
-        Instant now = Instant.now();
+    public Map<String, Object> login(AuthDTO.LoginRequest request) {
+        Authentication authentication =
+                authenticationManager
+                        .authenticate(new UsernamePasswordAuthenticationToken(
+                                request.email(),
+                                request.password()));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        String scope = authentication.getAuthorities()
-                .stream()
-                .map(GrantedAuthority::getAuthority)
-                .collect(Collectors.joining(" "));
+        AuthUser userDetails = (AuthUser) authentication.getPrincipal();
+        User user = userDetails.getUser();
+        AuthDTO.UserLoginResponse userLoginResponse = authMapper.toUserLoginResponse(user);
+        String token = jwtProvider.generateToken(authentication);
 
-        JwtClaimsSet claims = JwtClaimsSet.builder()
-                .issuer("self")
-                .issuedAt(now)
-                .expiresAt(now.plus(10, ChronoUnit.HOURS))
-                .subject(authentication.getName())
-                .claim("scope", scope)
-                .build();
-
-        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+        Map<String, Object> loginResultMap = new HashMap<>();
+        loginResultMap.put("user", userLoginResponse);
+        loginResultMap.put("token", token);
+        return loginResultMap;
     }
+
+    public void register(AuthDTO.RegisterRequest request) {
+        User user = authMapper.toUser(request);
+        user.setPassword(passwordEncoder.encode(request.password()));
+        userRepository.save(user);
+    }
+
 }
