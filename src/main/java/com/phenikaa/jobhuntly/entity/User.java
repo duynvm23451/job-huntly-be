@@ -84,6 +84,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> messages;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<Token> tokens;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;
