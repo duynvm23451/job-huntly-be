@@ -6,13 +6,15 @@ import com.phenikaa.jobhuntly.event.RegistrationCompleteEvent;
 import com.phenikaa.jobhuntly.service.TokenService;
 import com.phenikaa.jobhuntly.service.UserService;
 import jakarta.mail.MessagingException;
+import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMailMessage;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
@@ -60,11 +62,13 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
         context.setVariable("username", toUser.getUsername());
         context.setVariable("url", url);
         String process = templateEngine.process("mails/email_verification", context);
-        MimeMessageHelper messageHelper = new MimeMessageHelper(message,
-                MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED,
-                StandardCharsets.UTF_8.name());
+        MimeMessageHelper messageHelper = new MimeMessageHelper(message);
 
+        messageHelper.setFrom(new InternetAddress(USERNAME));
+        messageHelper.setSubject("Mail xac nhan dang ki");
         messageHelper.setTo(toUser.getEmail());
-        messageHelper.setText(process);
+        messageHelper.setText(process, true);
+
+        mailSender.send(message);
     }
 }
