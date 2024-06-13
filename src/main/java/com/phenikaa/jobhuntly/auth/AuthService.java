@@ -44,10 +44,10 @@ public class AuthService {
         return loginResultMap;
     }
 
-    public void register(AuthDTO.RegisterRequest request) {
+    public User register(AuthDTO.RegisterRequest request) {
         User user = authMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.password()));
-        userRepository.save(user);
+        return userRepository.save(user);
     }
 
 }
