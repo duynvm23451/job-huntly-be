@@ -45,11 +45,11 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
         // 3. Save the verification token for the user
         tokenService.saveToken(user, verificationToken, TokenType.VERIFICATION_TOKEN);
         // 4. Build the verification url to sent to the user
-        String url = event.getAppUrl() + "/register/verifyEmail?token=" + verificationToken + "&username=" + user.getUsername();
+        String url = event.getAppUrl() + "/register/verifyEmail?token=" + verificationToken;
 
         // 5. Sent the email
         try {
-            sendMail(user, verificationToken);
+            sendMail(user, url);
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }
