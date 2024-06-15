@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.auth;
 
+import com.phenikaa.jobhuntly.validation.PasswordMatch;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,5 +19,11 @@ public class AuthDTO {
     public record UserLoginResponse(
             String email,
             String username
+    ) {}
+
+    @PasswordMatch(message = "Mật khẩu và mật khẩu xác nhận phải giống nhau")
+    public record ResetPasswordRequest(
+            String password,
+            String passwordConfirmation
     ) {}
 }
