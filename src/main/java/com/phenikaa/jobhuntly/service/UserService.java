@@ -17,4 +17,10 @@ public class UserService {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
+
+    public User getUser(String email) {
+        return userRepository.findUserByEmail(email).orElseThrow(
+                () -> new RuntimeException("Không tìm thấy người dùng có email này")
+        );
+    }
 }

@@ -2,10 +2,15 @@ package com.phenikaa.jobhuntly.auth;
 
 import com.phenikaa.jobhuntly.dto.ResponseDTO;
 import com.phenikaa.jobhuntly.entity.User;
+import com.phenikaa.jobhuntly.enums.TokenType;
+import com.phenikaa.jobhuntly.event.ForgotPasswordEvent;
 import com.phenikaa.jobhuntly.event.RegistrationCompleteEvent;
+import com.phenikaa.jobhuntly.service.TokenService;
+import com.phenikaa.jobhuntly.service.UserService;
 import com.sun.net.httpserver.Authenticator;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +22,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +35,8 @@ public class AuthController {
 
     private final AuthService authService;
     private final ApplicationEventPublisher eventPublisher;
+    private final TokenService tokenService;
+    private final UserService userService;
 
 
     @PostMapping("/login")
@@ -58,6 +62,38 @@ public class AuthController {
                 .build();
 
     }
+
+    @PutMapping("/verifyEmail")
+    public ResponseDTO verifyEmail(@RequestParam String token) {
+        tokenService.checkToken(token, TokenType.VERIFICATION_TOKEN);
+        return ResponseDTO.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Xác nhận email thành công, vui lòng đăng nhập để sử dụng sản phẩm")
+                .build();
+    }
+
+    @GetMapping("/forgotPassword")
+    public ResponseDTO forgotPassword(@RequestParam String email, HttpServletRequest request) throws IllegalAccessException {
+        User user = userService.getUser(email);
+        eventPublisher.publishEvent(new ForgotPasswordEvent(user, appUrl(request)));
+        return ResponseDTO.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Vui lòng kiểm tra email để thay đổi mật khẩu mới")
+                .build();
+    }
+
+    @PutMapping("/resetPassword")
+    public ResponseDTO resetPassword(@RequestParam String token,@RequestBody AuthDTO.ResetPasswordRequest request) throws IllegalAccessException {
+        tokenService.resetUserPassword(request.password(), token, TokenType.RESET_PASSWORD_TOKEN);
+        return ResponseDTO.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Thay đổi mật khẩu thành công")
+                .build();
+    }
+
 
     private String appUrl(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();

@@ -56,7 +56,7 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
 
     }
 
-    public void sendMail(User toUser, String url) throws MessagingException {
+    private void sendMail(User toUser, String url) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         Context context = new Context();
         context.setVariable("username", toUser.getUsername());
