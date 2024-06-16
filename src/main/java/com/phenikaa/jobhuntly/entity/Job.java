@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.entity;
 
+import com.phenikaa.jobhuntly.enums.JobLevel;
 import com.phenikaa.jobhuntly.enums.JobType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -47,13 +48,12 @@ public class Job {
     @Column(name = "number_of_recruits")
     private int numberOfRecruits;
 
+    @Column(name = "job_level")
+    private JobLevel jobLevel;
+
     @ManyToOne
     @JoinColumn(name="company_id")
     private Company company;
-
-    @ManyToOne
-    @JoinColumn(name="job_level_id")
-    private JobLevel jobLevel;
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Application> users;
