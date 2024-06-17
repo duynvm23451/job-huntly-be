@@ -6,10 +6,14 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -59,15 +63,26 @@ public class Job {
     private Set<Application> users;
 
     @OneToMany(mappedBy = "job", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<JobCategory> categories;
+    private Set<JobCategory> categories = new HashSet<>();
 
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @CreatedDate
-    private java.util.Date created_at;
+    @CreationTimestamp
+    @Column(name = "created_at", updatable = false)
+    private Timestamp createdAt;
 
-    @LastModifiedDate
+    @UpdateTimestamp
     @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
+    private Timestamp updatedAt;
+
+    public void addCategory(Category category) {
+        JobCategory jobCategory = new JobCategory(this, category);
+        categories.add(jobCategory);
+        category.getJobs().add(jobCategory);
+    }
+
+    public void removeCategory(Category category) {
+        JobCategory jobCategory = new JobCategory(this, category);
+        categories.remove(jobCategory);
+        category.getJobs().remove(jobCategory);
+    }
 }
