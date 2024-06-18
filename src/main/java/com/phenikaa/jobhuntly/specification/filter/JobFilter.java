@@ -9,9 +9,9 @@ import lombok.Setter;
 public class JobFilter {
     private String title;
     private String location;
-    private int type;
+    private Integer type;
     private String category;
-    private int level;
-    private int minSalary;
-    private int maxSalary;
+    private Integer level;
+    private Integer minSalary;
+    private Integer maxSalary;
 }
