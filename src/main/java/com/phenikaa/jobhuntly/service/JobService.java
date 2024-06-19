@@ -22,26 +22,32 @@ public class JobService {
         Specification<Job> jobSpecification = Specification.where(null);
         if (filter.getTitle() != null) {
             System.out.println("title: " + filter.getTitle());
-            jobSpecification.and(JobSpecification.containsTitle(filter.getTitle()));
+            jobSpecification = jobSpecification.and(JobSpecification.containsTitle(filter.getTitle()));
         }
 
         if (filter.getLocation() != null) {
-            jobSpecification.and(JobSpecification.containsCompanyLocation(filter.getLocation()));
+            System.out.println("location" + filter.getLocation());
+            jobSpecification = jobSpecification.and(JobSpecification.containsCompanyLocation(filter.getLocation()));
         }
         if (filter.getLevel() != null) {
-            jobSpecification.and(JobSpecification.hasJobLevel(filter.getLevel()));
+            System.out.println("level" + filter.getLevel());
+            jobSpecification = jobSpecification.and(JobSpecification.hasJobLevel(filter.getLevel()));
         }
         if (filter.getCategory() != null) {
-            jobSpecification.and(JobSpecification.hasCategory(filter.getCategory()));
+            System.out.println("category" + filter.getCategory());
+            jobSpecification = jobSpecification.and(JobSpecification.hasCategory(filter.getCategory()));
         }
         if (filter.getType() != null) {
-            jobSpecification.and(JobSpecification.hasJobType(filter.getType()));
+            System.out.println("type" + filter.getType());
+            jobSpecification = jobSpecification.and(JobSpecification.hasJobType(filter.getType()));
         }
         if (filter.getMinSalary() != null) {
-            jobSpecification.and(JobSpecification.greaterThanMinSalary(filter.getMinSalary()));
+            System.out.println("minSalary" + filter.getMinSalary());
+            jobSpecification = jobSpecification.and(JobSpecification.greaterThanMinSalary(filter.getMinSalary()));
         }
         if (filter.getMaxSalary() != null) {
-            jobSpecification.and(JobSpecification.lessThanMaxSalary(filter.getMaxSalary()));
+            System.out.println("maxSalary" + filter.getMaxSalary());
+            jobSpecification = jobSpecification.and(JobSpecification.lessThanMaxSalary(filter.getMaxSalary()));
         }
         Page<Job> jobs = jobRepository.findAll(jobSpecification, pageable);
         return jobs.map(jobMapper::toJobResponse);

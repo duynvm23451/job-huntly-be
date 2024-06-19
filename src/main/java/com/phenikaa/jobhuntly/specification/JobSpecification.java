@@ -18,7 +18,7 @@ public class JobSpecification {
     }
 
     public static Specification<Job> hasCategory(String category) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("job_categories").join("category").get("name"), category);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.equal(root.join("categories").join("category").get("name"), category);
     }
 
     public static Specification<Job> hasJobLevel(Integer jobLevel) {
@@ -26,11 +26,11 @@ public class JobSpecification {
     }
 
     public static Specification<Job> greaterThanMinSalary(Integer minSalary) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("salary"), minSalary);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("minSalary"), minSalary);
     }
 
     public static Specification<Job> lessThanMaxSalary(Integer maxSalary) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("salary"), maxSalary);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("minSalary"), maxSalary);
     }
 
 }
