@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.controller;
 
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -7,7 +8,9 @@ import org.springframework.web.bind.annotation.RestController;
 public class HelloController {
 
     @GetMapping("/hello")
-    public String hello() {
+    public String hello(Authentication authentication)
+    {
+        System.out.println(authentication.getName());
         return "Hello World";
     }
 }
