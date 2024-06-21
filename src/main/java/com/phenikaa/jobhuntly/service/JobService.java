@@ -52,4 +52,11 @@ public class JobService {
         Page<Job> jobs = jobRepository.findAll(jobSpecification, pageable);
         return jobs.map(jobMapper::toJobResponse);
     }
+
+    public JobDTO.JobResponse getJob(Integer jobId) {
+        Job job = jobRepository.findById(jobId).orElseThrow(
+                () -> new RuntimeException("Job not found")
+        );
+        return jobMapper.toJobResponse(job);
+    }
 }

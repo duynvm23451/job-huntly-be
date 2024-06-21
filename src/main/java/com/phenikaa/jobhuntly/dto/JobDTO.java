@@ -9,9 +9,12 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 public class JobDTO {
 
     public record JobResponse(
+            Integer id,
             String title,
             String description,
             JobType type,
@@ -21,7 +24,8 @@ public class JobDTO {
             String niceToHaves,
             String preferredQualifications,
             int numberOfRecruits,
-            JobLevel jobLevel
+            JobLevel jobLevel,
+            List<String> categories
     ) {
 
     }
