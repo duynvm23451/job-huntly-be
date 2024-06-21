@@ -55,6 +55,10 @@ public class Company {
     @OneToMany(mappedBy="company")
     private Set<Job> jobs;
 
+    @ManyToOne
+    @JoinColumn(name = "industry_id")
+    private Industry industry;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private Timestamp createdAt;

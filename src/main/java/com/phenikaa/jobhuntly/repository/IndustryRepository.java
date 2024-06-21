@@ -1,9 +1,9 @@
 package com.phenikaa.jobhuntly.repository;
 
-import com.phenikaa.jobhuntly.entity.Company;
+import com.phenikaa.jobhuntly.entity.Industry;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyRepository extends JpaRepository<Company, Integer> {
+public interface IndustryRepository extends JpaRepository<Industry, Industry> {
 }
