@@ -29,17 +29,17 @@ public class JobService {
             System.out.println("location" + filter.getLocation());
             jobSpecification = jobSpecification.and(JobSpecification.containsCompanyLocation(filter.getLocation()));
         }
-        if (filter.getLevel() != null) {
-            System.out.println("level" + filter.getLevel());
-            jobSpecification = jobSpecification.and(JobSpecification.hasJobLevel(filter.getLevel()));
+        if (filter.getLevels() != null) {
+            System.out.println("level" + filter.getLevels());
+            jobSpecification = jobSpecification.and(JobSpecification.hasJobLevels(filter.getLevels()));
         }
-        if (filter.getCategory() != null) {
-            System.out.println("category" + filter.getCategory());
-            jobSpecification = jobSpecification.and(JobSpecification.hasCategory(filter.getCategory()));
+        if (filter.getCategories() != null) {
+            System.out.println("category" + filter.getCategories());
+            jobSpecification = jobSpecification.and(JobSpecification.hasCategories(filter.getCategories()));
         }
-        if (filter.getType() != null) {
-            System.out.println("type" + filter.getType());
-            jobSpecification = jobSpecification.and(JobSpecification.hasJobType(filter.getType()));
+        if (filter.getTypes() != null) {
+            System.out.println("type" + filter.getTypes());
+            jobSpecification = jobSpecification.and(JobSpecification.hasJobTypes(filter.getTypes()));
         }
         if (filter.getMinSalary() != null) {
             System.out.println("minSalary" + filter.getMinSalary());
