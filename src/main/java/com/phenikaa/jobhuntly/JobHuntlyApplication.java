@@ -66,11 +66,16 @@ public class JobHuntlyApplication {
                 industry1.setName("Industry1");
                 industryRepository.save(industry1);
 
+                Industry industry2 = new Industry();
+                industry2.setName("Industry2");
+                industryRepository.save(industry2);
+
                 Company company1 = new Company();
                 company1.setName("Company1");
                 company1.setDescription("Company 1");
                 company1.setEmployees(5);
-                company1.setIndustry(industry1);
+                company1.addIndustry(industry1);
+                company1.addIndustry(industry2);
                 companyRepository.save(company1);
 
                 Job job1 = new Job();

@@ -29,6 +29,8 @@ public class Company {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    private String logo;
+
     @Column(columnDefinition = "TEXT")
     private String location;
 
@@ -55,9 +57,13 @@ public class Company {
     @OneToMany(mappedBy="company")
     private Set<Job> jobs;
 
-    @ManyToOne
-    @JoinColumn(name = "industry_id")
-    private Industry industry;
+    @ManyToMany
+    @JoinTable(
+            name = "company_industries",
+            joinColumns = @JoinColumn(name = "company_id"),
+            inverseJoinColumns = @JoinColumn(name = "industry_id")
+    )
+    private Set<Industry> industries = new HashSet<>();
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
@@ -66,4 +72,9 @@ public class Company {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    public void addIndustry(Industry industry) {
+        industries.add(industry);
+        industry.getCompanies().add(this);
+    }
 }

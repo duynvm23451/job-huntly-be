@@ -22,7 +22,7 @@ public class Industry {
 
     private String name;
 
-    @OneToMany(mappedBy = "industry", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
     private Set<Company> companies = new HashSet<>();
 
     @CreationTimestamp
