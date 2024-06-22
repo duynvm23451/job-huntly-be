@@ -40,7 +40,7 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseDTO login(@RequestBody AuthDTO.LoginRequest userLogin) throws IllegalAccessException {
+    public ResponseDTO login(@RequestBody AuthDTO.LoginRequest userLogin) {
         Map<String, Object> response = authService.login(userLogin);
 
         return ResponseDTO.builder()
@@ -52,7 +52,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseDTO register(@Valid @RequestBody AuthDTO.RegisterRequest userRegister, HttpServletRequest request) throws IllegalAccessException {
+    public ResponseDTO register(@Valid @RequestBody AuthDTO.RegisterRequest userRegister, HttpServletRequest request) {
         User user = authService.register(userRegister);
         eventPublisher.publishEvent(new RegistrationCompleteEvent(user, appUrl(request)));
         return ResponseDTO.builder()
@@ -74,7 +74,7 @@ public class AuthController {
     }
 
     @GetMapping("/forgotPassword")
-    public ResponseDTO forgotPassword(@RequestParam String email, HttpServletRequest request) throws IllegalAccessException {
+    public ResponseDTO forgotPassword(@RequestParam String email, HttpServletRequest request) {
         User user = userService.getUser(email);
         eventPublisher.publishEvent(new ForgotPasswordEvent(user, appUrl(request)));
         return ResponseDTO.builder()
@@ -85,7 +85,7 @@ public class AuthController {
     }
 
     @PutMapping("/resetPassword")
-    public ResponseDTO resetPassword(@RequestParam String token,@RequestBody AuthDTO.ResetPasswordRequest request) throws IllegalAccessException {
+    public ResponseDTO resetPassword(@RequestParam String token,@RequestBody AuthDTO.ResetPasswordRequest request) {
         tokenService.resetUserPassword(request.password(), token, TokenType.RESET_PASSWORD_TOKEN);
         return ResponseDTO.builder()
                 .success(true)
