@@ -3,6 +3,7 @@ package com.phenikaa.jobhuntly.service;
 import com.phenikaa.jobhuntly.entity.Token;
 import com.phenikaa.jobhuntly.entity.User;
 import com.phenikaa.jobhuntly.enums.TokenType;
+import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
 import com.phenikaa.jobhuntly.repository.TokenRepository;
 import com.phenikaa.jobhuntly.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ public class TokenService {
 
         if (theToken.getExpirationTime().before(new Date())) {
             tokenRepository.delete(theToken);
-            throw new RuntimeException("Token đã hết hạn");
+            throw new ObjectNotFoundException("token", "giá trị", token);
         }
 
         tokenRepository.delete(theToken);
