@@ -1,15 +1,9 @@
 package com.phenikaa.jobhuntly;
 
-import com.phenikaa.jobhuntly.entity.Category;
-import com.phenikaa.jobhuntly.entity.Company;
-import com.phenikaa.jobhuntly.entity.Job;
-import com.phenikaa.jobhuntly.entity.User;
+import com.phenikaa.jobhuntly.entity.*;
 import com.phenikaa.jobhuntly.enums.JobLevel;
 import com.phenikaa.jobhuntly.enums.JobType;
-import com.phenikaa.jobhuntly.repository.CategoryRepository;
-import com.phenikaa.jobhuntly.repository.CompanyRepository;
-import com.phenikaa.jobhuntly.repository.JobRepository;
-import com.phenikaa.jobhuntly.repository.UserRepository;
+import com.phenikaa.jobhuntly.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -30,6 +24,7 @@ public class JobHuntlyApplication {
     private final JobRepository jobRepository;
     private final CompanyRepository companyRepository;
     private final UserRepository userRepository;
+    private final IndustryRepository industryRepository;
     private final PasswordEncoder passwordEncoder;
 
     public static void main(String[] args) {
@@ -67,10 +62,20 @@ public class JobHuntlyApplication {
                 category5.setName("Category5");
                 categoryRepository.save(category5);
 
+                Industry industry1 = new Industry();
+                industry1.setName("Industry1");
+                industryRepository.save(industry1);
+
+                Industry industry2 = new Industry();
+                industry2.setName("Industry2");
+                industryRepository.save(industry2);
+
                 Company company1 = new Company();
                 company1.setName("Company1");
                 company1.setDescription("Company 1");
                 company1.setEmployees(5);
+                company1.addIndustry(industry1);
+                company1.addIndustry(industry2);
                 companyRepository.save(company1);
 
                 Job job1 = new Job();
@@ -85,6 +90,7 @@ public class JobHuntlyApplication {
                 job1.addCategory(category2);
 
                 jobRepository.save(job1);
+
             }
 
 

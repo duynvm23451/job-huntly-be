@@ -60,7 +60,8 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeRequests( auth -> auth
                         .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/jobs").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/jobs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/companies/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer((oauth2) -> oauth2
