@@ -2,6 +2,7 @@ package com.phenikaa.jobhuntly.service;
 
 import com.phenikaa.jobhuntly.dto.CompanyDTO;
 import com.phenikaa.jobhuntly.entity.Company;
+import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
 import com.phenikaa.jobhuntly.mapper.CompanyMapper;
 import com.phenikaa.jobhuntly.repository.CompanyRepository;
 import com.phenikaa.jobhuntly.specification.CompanySpecification;
@@ -39,7 +40,7 @@ public class CompanyService {
 
     public CompanyDTO.CompanyResponse findCompanyDetail(Integer comapanyId) {
         return companyRepository.findById(comapanyId).map(companyMapper::toCompanyResponse).orElseThrow(
-                () -> new RuntimeException("Company not found")
+                () -> new ObjectNotFoundException("công ty", comapanyId)
         );
     }
 }

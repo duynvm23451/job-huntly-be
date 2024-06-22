@@ -2,6 +2,7 @@ package com.phenikaa.jobhuntly.service;
 
 import com.phenikaa.jobhuntly.dto.JobDTO;
 import com.phenikaa.jobhuntly.entity.Job;
+import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
 import com.phenikaa.jobhuntly.mapper.JobMapper;
 import com.phenikaa.jobhuntly.repository.JobRepository;
 import com.phenikaa.jobhuntly.specification.JobSpecification;
@@ -55,7 +56,7 @@ public class JobService {
 
     public JobDTO.JobResponse getJob(Integer jobId) {
         Job job = jobRepository.findById(jobId).orElseThrow(
-                () -> new RuntimeException("Job not found")
+                () -> new ObjectNotFoundException("Công ty", jobId)
         );
         return jobMapper.toJobResponse(job);
     }

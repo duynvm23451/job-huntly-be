@@ -1,6 +1,7 @@
 package com.phenikaa.jobhuntly.service;
 
 import com.phenikaa.jobhuntly.entity.User;
+import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
 import com.phenikaa.jobhuntly.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,7 +21,7 @@ public class UserService {
 
     public User getUser(String email) {
         return userRepository.findUserByEmail(email).orElseThrow(
-                () -> new RuntimeException("Không tìm thấy người dùng có email này")
+                () -> new ObjectNotFoundException("Người dùng", "email", email)
         );
     }
 }
