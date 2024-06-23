@@ -49,6 +49,7 @@ public class User {
     @Column(name = "full_name")
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
     private Role role;
 
     @Column(name = "date_of_birth")

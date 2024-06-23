@@ -3,6 +3,7 @@ package com.phenikaa.jobhuntly;
 import com.phenikaa.jobhuntly.entity.*;
 import com.phenikaa.jobhuntly.enums.JobLevel;
 import com.phenikaa.jobhuntly.enums.JobType;
+import com.phenikaa.jobhuntly.enums.Role;
 import com.phenikaa.jobhuntly.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -39,6 +40,7 @@ public class JobHuntlyApplication {
                 user.setPassword(passwordEncoder.encode("password"));
                 user.setUsername("phenikaa");
                 user.setEmail("duynvm1711@gmail.com");
+                user.setRole(Role.RECRUITER);
                 user.setEnable(true);
                 userRepository.save(user);
 
