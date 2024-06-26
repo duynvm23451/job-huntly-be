@@ -27,4 +27,11 @@ public class CompanyDTO {
             String logo,
             Set<IndustryDTO.IndustryResponse> industries
     ) {}
+
+    public record ComapanyForJobResponse(
+            Integer id,
+            String name,
+            String logo,
+            String location
+    ) {}
 }
