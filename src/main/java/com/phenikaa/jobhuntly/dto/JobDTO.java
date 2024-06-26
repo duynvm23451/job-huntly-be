@@ -25,7 +25,8 @@ public class JobDTO {
             String preferredQualifications,
             int numberOfRecruits,
             JobLevel jobLevel,
-            List<String> categories
+            List<String> categories,
+            CompanyDTO.ComapanyForJobResponse company
     ) {
 
     }
