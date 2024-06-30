@@ -25,6 +25,7 @@ public class CompanyDTO {
             String name,
             String description,
             String logo,
+            Integer availableJobs,
             Set<IndustryDTO.IndustryResponse> industries
     ) {}
 
