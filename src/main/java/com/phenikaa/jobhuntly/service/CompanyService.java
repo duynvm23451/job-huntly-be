@@ -31,7 +31,7 @@ public class CompanyService {
         if (companyFilter.getIndustries() != null) {
             companySpecification = companySpecification.and(CompanySpecification.hasIndustries(companyFilter.getIndustries()));
         }
-        if (companyFilter.getMinEmployees() != null && companyFilter.getMaxEmployees() != null) {
+        if (companyFilter.getMinEmployees() != null || companyFilter.getMaxEmployees() != null) {
             companySpecification = companySpecification.and(CompanySpecification.inRangeEmployees(companyFilter.getMinEmployees(), companyFilter.getMaxEmployees()));
         }
         Page<Company> companies = companyRepository.findAll(companySpecification, pageable);

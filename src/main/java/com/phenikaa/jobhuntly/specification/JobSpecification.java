@@ -12,11 +12,11 @@ public class JobSpecification {
     }
 
     public static Specification<Job> containsCompanyLocation(String providedCompanyLocation) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.join("companies").get("location"), "%" + providedCompanyLocation.toLowerCase() + "%");
+        return (root, query, criteriaBuilder) -> criteriaBuilder.like(root.join("company").get("location"), "%" + providedCompanyLocation.toLowerCase() + "%");
     }
 
     public static Specification<Job> hasJobTypes(List<Integer> jobTypes) {
-        return (root, query, criteriaBuilder) -> root.get("jobTypes").in(jobTypes);
+        return (root, query, criteriaBuilder) -> root.get("type").in(jobTypes);
     }
 
     public static Specification<Job> hasCategories(List<String> categories) {
@@ -28,11 +28,11 @@ public class JobSpecification {
     }
 
     public static Specification<Job> greaterThanMinSalary(Integer minSalary) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThan(root.get("minSalary"), minSalary);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.greaterThanOrEqualTo(root.get("minSalary"), minSalary);
     }
 
     public static Specification<Job> lessThanMaxSalary(Integer maxSalary) {
-        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThan(root.get("minSalary"), maxSalary);
+        return (root, query, criteriaBuilder) -> criteriaBuilder.lessThanOrEqualTo(root.get("maxSalary"), maxSalary);
     }
 
 }

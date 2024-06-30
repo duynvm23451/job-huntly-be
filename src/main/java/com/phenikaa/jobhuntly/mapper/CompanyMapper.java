@@ -11,5 +11,10 @@ public interface CompanyMapper {
     CompanyDTO.CompanyResponse toCompanyResponse(Company company);
 
     @Mapping(source = "industries", target = "industries")
+    @Mapping(target = "availableJobs", expression = "java(calculateAvailableJobs(company))")
     CompanyDTO.ListCompanyResponse toListCompanyResponse(Company company);
+
+    default Integer calculateAvailableJobs(Company company) {
+        return company.getJobs().size();
+    }
 }
