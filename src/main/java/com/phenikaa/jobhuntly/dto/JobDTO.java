@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.Date;
 import java.util.List;
 
 public class JobDTO {
@@ -23,10 +24,13 @@ public class JobDTO {
             String responsibilities,
             String niceToHaves,
             String preferredQualifications,
+            String perkAndBenefits,
             int numberOfRecruits,
             JobLevel jobLevel,
+            Date createdAt,
+            Date deadline,
             List<String> categories,
-            CompanyDTO.ComapanyForJobResponse company
+            CompanyDTO.CompanyForJobResponse company
     ) {
 
     }

@@ -13,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,11 +50,18 @@ public class Job {
     @Column(name = "preferred_qualifications", columnDefinition = "TEXT")
     private String preferredQualifications;
 
+    @Column(name = "perk_and_benefits", columnDefinition = "Text")
+    private String perkAndBenefits;
+
     @Column(name = "number_of_recruits")
     private int numberOfRecruits;
 
     @Column(name = "job_level")
     private JobLevel jobLevel;
+
+    @Temporal(TemporalType.DATE)
+    private Date deadline;
+
 
     @ManyToOne
     @JoinColumn(name="company_id")

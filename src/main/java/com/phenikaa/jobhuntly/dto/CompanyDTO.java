@@ -29,10 +29,11 @@ public class CompanyDTO {
             Set<IndustryDTO.IndustryResponse> industries
     ) {}
 
-    public record ComapanyForJobResponse(
+    public record CompanyForJobResponse(
             Integer id,
             String name,
             String logo,
-            String location
+            String location,
+            Integer employees
     ) {}
 }
