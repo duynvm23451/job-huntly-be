@@ -13,6 +13,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class JobService {
@@ -59,5 +61,10 @@ public class JobService {
                 () -> new ObjectNotFoundException("Công ty", jobId)
         );
         return jobMapper.toJobResponse(job);
+    }
+
+    public Page<JobDTO.JobResponse> getJobsByCompanyId(Integer companyId, Pageable pageable) {
+        Page<Job> jobs = jobRepository.findByCompanyId(companyId, pageable);
+        return jobs.map(jobMapper::toJobResponse);
     }
 }
