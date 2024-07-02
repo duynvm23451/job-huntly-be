@@ -11,6 +11,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/jobs")
@@ -36,6 +38,17 @@ public class JobController {
                 .message("Lấy chi tiết công việc thành công")
                 .code(HttpStatus.OK.value())
                 .data(jobResponse)
+                .build();
+    }
+
+    @GetMapping("/company/{companyId}")
+    public ResponseDTO getJobsByCompany(@PathVariable Integer companyId, Pageable pageable) {
+        Page<JobDTO.JobResponse> jobResponses = this.jobService.getJobsByCompanyId(companyId, pageable);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Lấy các công việc từ Id của công ty thành công")
+                .code(HttpStatus.OK.value())
+                .data(jobResponses)
                 .build();
     }
 }

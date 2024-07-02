@@ -16,8 +16,7 @@ public class CompanyDTO {
             String youtubeLink,
             String linkedinLink,
             String websiteLink,
-            Set<IndustryDTO.IndustryResponse> industries,
-            Set<JobDTO.JobResponse> jobs
+            Set<IndustryDTO.IndustryResponse> industries
     ) {}
 
     public record ListCompanyResponse(
