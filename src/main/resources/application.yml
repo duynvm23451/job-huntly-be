@@ -28,10 +28,8 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
-
 outbound:
   job-huntly:
     client-id: ${CLIENT_ID}
     client-secret: ${CLIENT_SECRET}
     redirect-uri: ${REDIRECT_URI}
-    grant-type: authorization_code
