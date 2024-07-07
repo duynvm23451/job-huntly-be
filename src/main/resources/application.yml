@@ -11,6 +11,15 @@ spring:
     user:
       name: user
       password: Duy
+#    oauth2:
+#      client:
+#        registration:
+#          google:
+#            client-id: 785238324222-uhveoj2d99nn8ckrh67p84cj3ic4ngug.apps.googleusercontent.com
+#            client-secret: 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
+#            scope:
+#              - email
+#              - profile
   mail:
     username: ${MAIL_USERNAME}
     host: ${MAIL_HOST}
@@ -28,3 +37,10 @@ spring:
     web:
       pageable:
         one-indexed-parameters: true
+
+outbound:
+  job-huntly:
+    client-id: ${CLIENT_ID}
+    client-secret: ${CLIENT_SECRET}
+    redirect-uri: ${REDIRECT_URI}
+    grant-type: authorization_code
