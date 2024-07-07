@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.auth;
 
+import com.phenikaa.jobhuntly.dto.ExchangeTokenDTO;
 import com.phenikaa.jobhuntly.dto.ResponseDTO;
 import com.phenikaa.jobhuntly.entity.User;
 import com.phenikaa.jobhuntly.enums.TokenType;
@@ -94,6 +95,17 @@ public class AuthController {
                 .build();
     }
 
+
+    @PostMapping("/outbound/authentication")
+    public ResponseDTO outboundAuthenticate(@RequestParam("code") String code, @RequestParam("role") String role) {
+        ExchangeTokenDTO.ExchangeTokenResponse response = authService.outboundAuthenticate(code, role);
+        return ResponseDTO.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Đăng nhập thành công")
+                .data(response)
+                .build();
+    }
 
     private String appUrl(HttpServletRequest request) {
         return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
