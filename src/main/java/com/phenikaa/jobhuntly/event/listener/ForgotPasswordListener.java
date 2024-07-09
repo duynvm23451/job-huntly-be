@@ -27,6 +27,9 @@ public class ForgotPasswordListener implements ApplicationListener<ForgotPasswor
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
 
+    @Value("${client-url}")
+    private String CLIENT_URL;
+
     @Value("${spring.mail.username}")
     private String USERNAME;
 
@@ -38,7 +41,7 @@ public class ForgotPasswordListener implements ApplicationListener<ForgotPasswor
 
         tokenService.saveToken(user, token, TokenType.RESET_PASSWORD_TOKEN);
 
-        String url = event.getAppUrl() + "/forgot-password?token=" + token;
+        String url = CLIENT_URL + "/forgot-password?token=" + token;
 
         try {
             sendMail(user, url);

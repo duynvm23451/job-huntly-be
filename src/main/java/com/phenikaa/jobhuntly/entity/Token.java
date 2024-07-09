@@ -36,12 +36,12 @@ public class Token {
 
     public Token(User user, String token, TokenType tokenType ) {
         this.token = token;
-        this.expirationTime = getExpirationTime();
+        this.expirationTime = generateExpirationDate();
         this.tokenType = tokenType;
         this.user = user;
     }
 
-    public Date getExpirationTime() {
+    public static Date generateExpirationDate() {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(new Date().getTime());
         calendar.add(Calendar.MINUTE, EXPIRATION_DURATION);
