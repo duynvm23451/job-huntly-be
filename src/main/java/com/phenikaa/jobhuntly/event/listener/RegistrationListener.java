@@ -30,6 +30,9 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
 
     private final JavaMailSender mailSender;
 
+    @Value("${client-url}")
+    private String CLIENT_URL;
+
     @Value("${spring.mail.username}")
     private String USERNAME;
     private final SpringTemplateEngine templateEngine;
@@ -38,6 +41,9 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
     public void onApplicationEvent(RegistrationCompleteEvent event) {
         // 1. Get the newLy registered user
         User user = (User) event.getSource();
+        if (user.isEnable()) {
+            throw new RuntimeException("Tài khoản này đã được kích hoạt rồi");
+        }
 
         // 2. Create a verification token for the user
         String verificationToken = UUID.randomUUID().toString();
@@ -45,7 +51,7 @@ public class RegistrationListener implements ApplicationListener<RegistrationCom
         // 3. Save the verification token for the user
         tokenService.saveToken(user, verificationToken, TokenType.VERIFICATION_TOKEN);
         // 4. Build the verification url to sent to the user
-        String url = event.getAppUrl() + "/register/verifyEmail?token=" + verificationToken;
+        String url = CLIENT_URL + "/register/verifyEmail?token=" + verificationToken;
 
         // 5. Sent the email
         try {

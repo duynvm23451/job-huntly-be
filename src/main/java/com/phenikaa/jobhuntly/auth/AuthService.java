@@ -68,6 +68,7 @@ public class AuthService {
     public User register(AuthDTO.RegisterRequest request) {
         User user = authMapper.toUser(request);
         user.setPassword(passwordEncoder.encode(request.password()));
+        user.setRole(Role.valueOf(request.role()));
         return userRepository.save(user);
     }
 

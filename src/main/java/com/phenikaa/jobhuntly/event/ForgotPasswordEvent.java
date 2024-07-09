@@ -8,11 +8,7 @@ import org.springframework.context.ApplicationEvent;
 @Getter
 @Setter
 public class ForgotPasswordEvent extends ApplicationEvent {
-
-    private String appUrl;
-
-    public ForgotPasswordEvent(User user, String appUrl) {
+    public ForgotPasswordEvent(User user) {
         super(user);
-        this.appUrl = appUrl;
     }
 }

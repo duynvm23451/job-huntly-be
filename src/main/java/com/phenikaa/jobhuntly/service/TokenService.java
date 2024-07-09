@@ -21,8 +21,12 @@ public class TokenService {
     private final PasswordEncoder passwordEncoder;
 
     public void saveToken(User user, String token, TokenType type) {
-        Token tokenObj = new Token(user, token, type);
-        tokenRepository.save(tokenObj);
+        Token existingToken = tokenRepository.findByTokenTypeAndUserId(type, user.getId()).orElseGet(
+                () -> tokenRepository.save(new Token(user, token, type))
+        );
+        existingToken.setToken(token);
+        existingToken.setExpirationTime(Token.generateExpirationDate());
+        tokenRepository.save(existingToken);
     }
 
     public void checkToken(String token, TokenType tokenType) {

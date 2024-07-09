@@ -53,9 +53,9 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseDTO register(@Valid @RequestBody AuthDTO.RegisterRequest userRegister, HttpServletRequest request) {
+    public ResponseDTO register(@Valid @RequestBody AuthDTO.RegisterRequest userRegister) {
         User user = authService.register(userRegister);
-        eventPublisher.publishEvent(new RegistrationCompleteEvent(user, appUrl(request)));
+        eventPublisher.publishEvent(new RegistrationCompleteEvent(user));
         return ResponseDTO.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
@@ -75,9 +75,9 @@ public class AuthController {
     }
 
     @GetMapping("/forgotPassword")
-    public ResponseDTO forgotPassword(@RequestParam String email, HttpServletRequest request) {
+    public ResponseDTO forgotPassword(@RequestParam String email) {
         User user = userService.getUser(email);
-        eventPublisher.publishEvent(new ForgotPasswordEvent(user, appUrl(request)));
+        eventPublisher.publishEvent(new ForgotPasswordEvent(user));
         return ResponseDTO.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
@@ -107,7 +107,14 @@ public class AuthController {
                 .build();
     }
 
-    private String appUrl(HttpServletRequest request) {
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
+    @GetMapping("/resendRegisterToken")
+    public ResponseDTO resendRegisterToken(@RequestParam String email) {
+        User user = userService.getUser(email);
+        eventPublisher.publishEvent(new RegistrationCompleteEvent(user));
+        return ResponseDTO.builder()
+                .success(true)
+                .code(HttpStatus.OK.value())
+                .message("Đã gửi lại token, vui lòng kiểm tra email")
+                .build();
     }
 }

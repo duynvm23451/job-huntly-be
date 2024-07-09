@@ -34,3 +34,5 @@ outbound:
     client-secret: ${CLIENT_SECRET}
     redirect-uri: ${REDIRECT_URI}
     grant-type: authorization_code
+
+client-url: ${FRONTEND_URL}
