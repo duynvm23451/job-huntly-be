@@ -41,7 +41,7 @@ public class ForgotPasswordListener implements ApplicationListener<ForgotPasswor
 
         tokenService.saveToken(user, token, TokenType.RESET_PASSWORD_TOKEN);
 
-        String url = CLIENT_URL + "/forgot-password?token=" + token;
+        String url = CLIENT_URL + "/reset-password?token=" + token;
 
         try {
             sendMail(user, url);

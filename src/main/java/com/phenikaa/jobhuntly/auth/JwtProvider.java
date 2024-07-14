@@ -21,17 +21,18 @@ public class JwtProvider {
 
     public String generateToken(Authentication authentication) {
         Instant now = Instant.now();
-
         String scope = authentication.getAuthorities()
                 .stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(" "));
 
+        AuthUser user = (AuthUser) authentication.getPrincipal();
         JwtClaimsSet claims = JwtClaimsSet.builder()
                 .issuer("self")
                 .issuedAt(now)
                 .expiresAt(now.plus(10, ChronoUnit.HOURS))
                 .subject(authentication.getName())
+                .claim("email", user.getUsername())
                 .claim("scope", scope)
                 .build();
 
