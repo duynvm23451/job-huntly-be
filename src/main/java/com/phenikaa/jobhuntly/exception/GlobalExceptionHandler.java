@@ -17,6 +17,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import java.util.HashMap;
 import java.util.List;
@@ -114,7 +115,7 @@ public class GlobalExceptionHandler {
         return ResponseDTO.builder()
                 .success(false)
                 .message("Các đối số được cung cấp không đúng, vui lòng xem data để biết thêm chi tiết")
-                .code(HttpStatus.BAD_REQUEST.value())
+                .code(HttpStatus.EXPECTATION_FAILED.value())
                 .data(errorMap)
                 .build();
     }
