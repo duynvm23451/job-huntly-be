@@ -131,4 +131,15 @@ public class GlobalExceptionHandler {
                 .build();
     }
 
+    @ExceptionHandler(SharedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    ResponseDTO handleApplicationAlreadyExistsException(SharedException e) {
+        return ResponseDTO.builder()
+                .success(false)
+                .message(e.getMessage())
+                .code(HttpStatus.BAD_REQUEST.value())
+                .data(e.getMessage())
+                .build();
+    }
+
 }
