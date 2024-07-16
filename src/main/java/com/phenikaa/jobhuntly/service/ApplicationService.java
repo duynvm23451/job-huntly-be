@@ -11,6 +11,8 @@ import com.phenikaa.jobhuntly.repository.ApplicationRepository;
 import com.phenikaa.jobhuntly.repository.JobRepository;
 import com.phenikaa.jobhuntly.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -53,5 +55,9 @@ public class ApplicationService {
 
     public Map<String, Integer> countAllAndByStatus(Integer userId) {
         return applicationRepository.countAllAndByStatus(userId);
+    }
+
+    public Page<Application> getApplicationsByUser(Integer userId, Pageable pageable) {
+        return applicationRepository.findApplicationsByUser(userId, pageable);
     }
 }
