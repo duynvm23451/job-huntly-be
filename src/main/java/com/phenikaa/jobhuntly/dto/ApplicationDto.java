@@ -6,6 +6,7 @@ public class ApplicationDto {
     public record ApplicationResponse(
             Integer id,
             UserDTO.UserResponse user,
+            JobDTO.JobResponse job,
             String status,
             Date interviewTime
     ) {

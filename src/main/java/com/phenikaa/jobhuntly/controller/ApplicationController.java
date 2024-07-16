@@ -6,6 +6,8 @@ import com.phenikaa.jobhuntly.entity.Application;
 import com.phenikaa.jobhuntly.mapper.ApplicationMapper;
 import com.phenikaa.jobhuntly.service.ApplicationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +40,17 @@ public class ApplicationController {
                 .message("")
                 .code(HttpStatus.OK.value())
                 .data(response)
+                .build();
+    }
+
+    @GetMapping("/applications/{userId}")
+    public ResponseDTO getApplicationsByUser(@PathVariable Integer userId, Pageable pageable) {
+        Page<Application> applications = applicationService.getApplicationsByUser(userId, pageable);
+        Page<ApplicationDto.ApplicationResponse> responses = applications.map(application -> applicationMapper.toApplicationResponse(application));
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Lấy các đơn ứng tuyển thành công")
+                .data(responses)
                 .build();
     }
 }
