@@ -9,8 +9,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -43,13 +46,30 @@ public class ApplicationController {
                 .build();
     }
 
-    @GetMapping("/applications/{userId}")
-    public ResponseDTO getApplicationsByUser(@PathVariable Integer userId, Pageable pageable) {
+    @GetMapping("/applications")
+    public ResponseDTO getApplicationsByUser(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+        Long userIdLong = jwt.getClaim("userId");
+        Integer userId = userIdLong.intValue();
         Page<Application> applications = applicationService.getApplicationsByUser(userId, pageable);
-        Page<ApplicationDto.ApplicationResponse> responses = applications.map(application -> applicationMapper.toApplicationResponse(application));
+        Page<ApplicationDto.ApplicationResponse> responses = applications.map(applicationMapper::toApplicationResponse);
         return ResponseDTO.builder()
                 .success(true)
                 .message("Lấy các đơn ứng tuyển thành công")
+                .code(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+    }
+
+    @GetMapping("/applications/latest/interviewing")
+    public ResponseDTO getLatestInterviewingApplications(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+        Long userIdLong = jwt.getClaim("userId");
+        Integer userId = userIdLong.intValue();
+        Page<Application> applications = applicationService.getLatestInterviewing(userId, pageable);
+        Page<ApplicationDto.ApplicationResponse> responses = applications.map(applicationMapper::toApplicationResponse);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Lấy các đơn ứng tuyển mới nhất đang phỏng vấn thành công")
+                .code(HttpStatus.OK.value())
                 .data(responses)
                 .build();
     }
