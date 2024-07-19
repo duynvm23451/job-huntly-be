@@ -34,6 +34,7 @@ public class JwtProvider {
                 .subject(authentication.getName())
                 .claim("email", user.getUsername())
                 .claim("scope", scope)
+                .claim("userId", user.getUserId())
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();

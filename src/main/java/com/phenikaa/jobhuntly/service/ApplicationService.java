@@ -16,10 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -59,5 +56,9 @@ public class ApplicationService {
 
     public Page<Application> getApplicationsByUser(Integer userId, Pageable pageable) {
         return applicationRepository.findApplicationsByUser(userId, pageable);
+    }
+
+    public Page<Application> getLatestInterviewing(Integer userId, Pageable pageable) {
+        return applicationRepository.findByUserIdAndStatus(userId, ApplicationStatus.INTERVIEWING, pageable);
     }
 }

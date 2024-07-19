@@ -54,4 +54,8 @@ public class AuthUser  implements UserDetails {
     public String getUsername() {
         return user.getEmail();
     }
+
+    public Integer getUserId() {
+        return user.getId();
+    }
 }
