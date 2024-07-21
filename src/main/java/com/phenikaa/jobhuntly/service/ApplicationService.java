@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -59,6 +60,7 @@ public class ApplicationService {
     }
 
     public Page<Application> getLatestInterviewing(Integer userId, Pageable pageable) {
-        return applicationRepository.findByUserIdAndStatus(userId, ApplicationStatus.INTERVIEWING, pageable);
+        LocalDateTime currentTime = LocalDateTime.now();
+        return applicationRepository.findByUserIdAndStatusAndInterviewTimeBefore(userId, ApplicationStatus.INTERVIEWING, currentTime, pageable);
     }
 }

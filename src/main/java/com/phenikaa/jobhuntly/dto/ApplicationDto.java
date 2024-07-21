@@ -8,7 +8,8 @@ public class ApplicationDto {
             UserDTO.UserResponse user,
             JobDTO.JobResponse job,
             String status,
-            Date interviewTime
+            Date interviewTime,
+            Date createdAt
     ) {
     }
 }
