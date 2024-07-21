@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,5 +28,11 @@ public interface ApplicationRepository extends JpaRepository<Application, Intege
     @Query("SELECT a from Application a JOIN a.user u WHERE u.id = :userId")
     Page<Application> findApplicationsByUser(@Param("userId") Integer userId, Pageable pageable);
 
-    Page<Application> findByUserIdAndStatus(Integer userId, ApplicationStatus status, Pageable pageable);
+    @Query("SELECT a FROM Application as a WHERE a.user.id = :userId AND a.status = :status AND a.interviewTime <= :current")
+    Page<Application> findByUserIdAndStatusAndInterviewTimeBefore(
+            @Param("userId") Integer userId,
+            @Param("status") ApplicationStatus status,
+            @Param("current") LocalDateTime current,
+            Pageable pageable
+    );
 }
