@@ -18,42 +18,16 @@ import org.springframework.web.socket.server.support.DefaultHandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
-@Order(Ordered.HIGHEST_PRECEDENCE + 1)
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
-
-    @Value("${frontend.caller.host:http://localhost.5173}")
-    private String frontendCallerHost;
-
-    private final WebSocketFilter webSocketFilter;
-
-    public WebSocketConfig(WebSocketFilter webSocketConfig) {
-        this.webSocketFilter = webSocketConfig;
-    }
-
     @Override
-    public void configureClientInboundChannel(ChannelRegistration registration) {
-        registration.interceptors(webSocketFilter);
+    public void configureMessageBroker(MessageBrokerRegistry config) {
+        config.enableSimpleBroker("/topic");
+        config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        RequestUpgradeStrategy upgradeStrategy = new TomcatRequestUpgradeStrategy();
-        registry.addEndpoint("/ws")
-                .setHandshakeHandler(new DefaultHandshakeHandler(upgradeStrategy))
-                .setAllowedOrigins(this.frontendCallerHost);
-    }
-
-    @Override
-    public void configureMessageBroker(MessageBrokerRegistry registry) {
-        registry.setApplicationDestinationPrefixes("/app")
-                .enableSimpleBroker("/topic")
-                .setTaskScheduler(heartbeatTaskScheduler())
-                .setHeartbeatValue(new long[] {10000L, 10000L})
-        ;
-    }
-
-    @Bean
-    public TaskScheduler heartbeatTaskScheduler() {
-        return new ThreadPoolTaskScheduler();
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*");
+        registry.addEndpoint("/ws").setAllowedOriginPatterns("*").withSockJS();
     }
 }
