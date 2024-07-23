@@ -67,7 +67,7 @@ public class SecurityConfig {
                 .cors(Customizer.withDefaults())
                 .authorizeRequests( auth -> auth
                         .requestMatchers(HttpMethod.GET, "/hello").hasRole(Role.RECRUITER.name())
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/jobs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/companies/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "//users/company/**").permitAll()
