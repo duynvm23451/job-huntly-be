@@ -21,6 +21,12 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "is_user_1_seen")
+    private Boolean isUser1Seen;
+
+    @Column(name = "is_user_2_seen")
+    private Boolean isUser2Seen;
+
     @ManyToOne
     @JoinColumn(name = "user_1_id")
     private User user1;
