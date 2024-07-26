@@ -10,9 +10,12 @@ import com.phenikaa.jobhuntly.exception.SharedException;
 import com.phenikaa.jobhuntly.repository.ApplicationRepository;
 import com.phenikaa.jobhuntly.repository.JobRepository;
 import com.phenikaa.jobhuntly.repository.UserRepository;
+import com.phenikaa.jobhuntly.specification.ApplicationSpecification;
+import com.phenikaa.jobhuntly.specification.filter.ApplicationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -55,8 +58,17 @@ public class ApplicationService {
         return applicationRepository.countAllAndByStatus(userId);
     }
 
-    public Page<Application> getApplicationsByUser(Integer userId, Pageable pageable) {
-        return applicationRepository.findApplicationsByUser(userId, pageable);
+    public Page<Application> getApplicationsByUser(ApplicationFilter filter,Integer userId, Pageable pageable) {
+        Specification<Application> specification = Specification.where(null);
+        specification = specification.and(ApplicationSpecification.byUserId(userId));
+        if (filter.getStatus() != null) {
+            System.out.println(filter.getStatus());
+            specification = specification.and(ApplicationSpecification.hasStatus(ApplicationStatus.valueOf(filter.getStatus())));
+        }
+        if (filter.getJobTitle() != null) {
+            specification = specification.and(ApplicationSpecification.containJobTitle(filter.getJobTitle()));
+        }
+        return applicationRepository.findAll(specification, pageable);
     }
 
     public Page<Application> getLatestInterviewing(Integer userId, Pageable pageable) {

@@ -5,6 +5,7 @@ import com.phenikaa.jobhuntly.dto.ResponseDTO;
 import com.phenikaa.jobhuntly.entity.Application;
 import com.phenikaa.jobhuntly.mapper.ApplicationMapper;
 import com.phenikaa.jobhuntly.service.ApplicationService;
+import com.phenikaa.jobhuntly.specification.filter.ApplicationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -47,10 +48,10 @@ public class ApplicationController {
     }
 
     @GetMapping("/applications")
-    public ResponseDTO getApplicationsByUser(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+    public ResponseDTO getApplicationsByUser(@AuthenticationPrincipal Jwt jwt, ApplicationFilter filter, Pageable pageable) {
         Long userIdLong = jwt.getClaim("userId");
         Integer userId = userIdLong.intValue();
-        Page<Application> applications = applicationService.getApplicationsByUser(userId, pageable);
+        Page<Application> applications = applicationService.getApplicationsByUser(filter, userId, pageable);
         Page<ApplicationDto.ApplicationResponse> responses = applications.map(applicationMapper::toApplicationResponse);
         return ResponseDTO.builder()
                 .success(true)
