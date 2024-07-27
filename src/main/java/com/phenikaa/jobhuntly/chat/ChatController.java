@@ -39,7 +39,7 @@ public class ChatController {
     @MessageMapping("/chat")
     public void sendMessage(@Payload ChatDto.ChatRequest chatRequest) {
         try {;
-            chatService.sendMessage(chatRequest.toUserId(), chatRequest.message(), chatRequest.loggedInUserId());
+            chatService.sendMessage(chatRequest.destinationId(), chatRequest.message(), chatRequest.loggedInUserId());
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
                     .code(HttpStatus.OK.value())

@@ -1,6 +1,9 @@
 package com.phenikaa.jobhuntly.dto;
 
+import com.phenikaa.jobhuntly.entity.User;
+
 import java.util.Date;
+import java.util.List;
 import java.util.Set;
 
 public class CompanyDTO {
@@ -16,7 +19,8 @@ public class CompanyDTO {
             String youtubeLink,
             String linkedinLink,
             String websiteLink,
-            Set<IndustryDTO.IndustryResponse> industries
+            Set<IndustryDTO.IndustryResponse> industries,
+            Set<UserDTO.UserResponse> users
     ) {}
 
     public record ListCompanyResponse(

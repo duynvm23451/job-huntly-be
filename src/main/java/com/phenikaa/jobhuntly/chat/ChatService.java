@@ -1,11 +1,13 @@
 package com.phenikaa.jobhuntly.chat;
 
 import com.phenikaa.jobhuntly.entity.ChatRoom;
+import com.phenikaa.jobhuntly.entity.Company;
 import com.phenikaa.jobhuntly.entity.Message;
 import com.phenikaa.jobhuntly.entity.User;
 import com.phenikaa.jobhuntly.enums.Role;
 import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
 import com.phenikaa.jobhuntly.repository.ChatRoomRepository;
+import com.phenikaa.jobhuntly.repository.CompanyRepository;
 import com.phenikaa.jobhuntly.repository.MessageRepository;
 import com.phenikaa.jobhuntly.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,38 +22,45 @@ public class ChatService {
     private final ChatRoomRepository chatRoomRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final CompanyRepository companyRepository;
 
-    public void sendMessage(Integer toUserId, String message, Integer loggedInUserId) {
-        User toUser = userRepository.findById(toUserId).orElseThrow(
-                () -> new ObjectNotFoundException("Người dùng", toUserId)
-        );
+    public void sendMessage(Integer destinationId, String message, Integer loggedInUserId) {
+//        User toUser = userRepository.findById(toUserId).orElseThrow(
+//                () -> new ObjectNotFoundException("Người dùng", toUserId)
+//        );
         User loggedInUser = userRepository.findById(loggedInUserId).orElseThrow(
                 () -> new ObjectNotFoundException("Người dùng", loggedInUserId)
         );
         ChatRoom chatRoom = null;
-        if (toUser.getRole() == Role.EMPLOYEE) {
-            chatRoom = chatRoomRepository.findByUser1AndUser2(toUser, loggedInUser).orElseGet(
+        if (loggedInUser.getRole() == Role.EMPLOYEE) {
+            Company company = companyRepository.findById(destinationId).orElseThrow(
+                    () -> new ObjectNotFoundException("Công ty", destinationId)
+            );
+            chatRoom = chatRoomRepository.findByCompanyAndUser(company, loggedInUser).orElseGet(
                     () -> {
                         ChatRoom newChatRoom = new ChatRoom();
-                        newChatRoom.setUser1(toUser);
-                        newChatRoom.setUser2(loggedInUser);
+                        newChatRoom.setCompany(company);
+                        newChatRoom.setUser(loggedInUser);
                         return chatRoomRepository.save(newChatRoom);
                     }
             );
-            chatRoom.setIsUser1Seen(false);
-            chatRoom.setIsUser2Seen(true);
+            chatRoom.setIsCompanySeen(false);
+            chatRoom.setIsUserSeen(true);
         }
-        if (toUser.getRole() == Role.RECRUITER) {
-            chatRoom = chatRoomRepository.findByUser1AndUser2(loggedInUser, toUser).orElseGet(
+        if (loggedInUser.getRole() == Role.RECRUITER) {
+            User recevier = userRepository.findById(destinationId).orElseThrow(
+                    () -> new ObjectNotFoundException("Người dùng", destinationId)
+            );
+            chatRoom = chatRoomRepository.findByCompanyAndUser(loggedInUser.getCompany(), recevier).orElseGet(
                     () -> {
                         ChatRoom newChatRoom = new ChatRoom();
-                        newChatRoom.setUser1(loggedInUser);
-                        newChatRoom.setUser2(toUser);
+                        newChatRoom.setCompany(loggedInUser.getCompany());
+                        newChatRoom.setUser(recevier);
                         return chatRoomRepository.save(newChatRoom);
                     }
             );
-            chatRoom.setIsUser1Seen(true);
-            chatRoom.setIsUser2Seen(false);
+            chatRoom.setIsCompanySeen(true);
+            chatRoom.setIsUserSeen(false);
         }
         chatRoomRepository.save(chatRoom);
         Message newMessage = new Message();
@@ -64,10 +73,11 @@ public class ChatService {
 
     public Set<ChatRoom> getChatRoom(User user) {
         if (user.getRole() == Role.EMPLOYEE) {
-            return user.getChatRoomsAsUser1();
+            return user.getChatRoom();
         }
         if (user.getRole() == Role.RECRUITER) {
-            return user.getChatRoomsAsUser2();
+
+            return user.getCompany().getChatRoom();
         }
         return null;
     }
@@ -77,10 +87,10 @@ public class ChatService {
                 () -> new ObjectNotFoundException("Phòng chat", chatRoomId)
         );
         if (user.getRole() == Role.EMPLOYEE) {
-            chatRoom.setIsUser1Seen(true);
+            chatRoom.setIsUserSeen(true);
         }
         if (user.getRole() == Role.RECRUITER) {
-            chatRoom.setIsUser2Seen(false);
+            chatRoom.setIsCompanySeen(true);
         }
         chatRoomRepository.save(chatRoom);
         return messageRepository.findByChatRoomId(chatRoomId);

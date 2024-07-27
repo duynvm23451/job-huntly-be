@@ -2,7 +2,7 @@ package com.phenikaa.jobhuntly.dto;
 
 public class ChatDto {
     public record ChatRequest(
-            Integer toUserId,
+            Integer destinationId,
             Integer loggedInUserId,
             String message) {
     }
@@ -13,10 +13,10 @@ public class ChatDto {
 
     public record ChatRoomResponse(
             Integer id,
-            UserDTO.UserResponse user1,
-            UserDTO.UserResponse user2,
-            boolean isUser1Seen,
-            boolean isUser2Seen
+            UserDTO.UserResponse user,
+            CompanyDTO.ListCompanyResponse company,
+            boolean isUserSeen,
+            boolean isCompanySeen
     ) {}
 
     public record MessageResponse(

@@ -21,19 +21,19 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column(name = "is_user_1_seen")
-    private Boolean isUser1Seen;
+    @Column(name = "is_user_seen")
+    private Boolean isUserSeen;
 
-    @Column(name = "is_user_2_seen")
-    private Boolean isUser2Seen;
-
-    @ManyToOne
-    @JoinColumn(name = "user_1_id")
-    private User user1;
+    @Column(name = "is_company_seen")
+    private Boolean isCompanySeen;
 
     @ManyToOne
-    @JoinColumn(name = "user_2_id")
-    private User user2;
+    @JoinColumn(name = "company_id")
+    private Company company;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @OneToMany(mappedBy = "chatRoom")
     private List<Message> messages;
