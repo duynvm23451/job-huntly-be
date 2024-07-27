@@ -69,6 +69,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/hello").hasRole(Role.RECRUITER.name())
                         .requestMatchers("/config").permitAll()
                         .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/jobs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/companies/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/company/**").permitAll()

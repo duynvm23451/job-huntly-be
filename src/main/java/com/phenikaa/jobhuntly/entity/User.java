@@ -78,11 +78,8 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Application> jobs;
 
-    @OneToMany(mappedBy = "user1", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ChatRoom> chatRoomsAsUser1;
-
-    @OneToMany(mappedBy = "user2", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ChatRoom> chatRoomsAsUser2;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<ChatRoom> chatRoom;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Message> messages;

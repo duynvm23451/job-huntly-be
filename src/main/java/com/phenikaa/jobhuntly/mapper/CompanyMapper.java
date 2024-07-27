@@ -5,9 +5,10 @@ import com.phenikaa.jobhuntly.entity.Company;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {JobMapper.class})
+@Mapper(componentModel = "spring", uses = {JobMapper.class, UserMapper.class})
 public interface CompanyMapper {
     @Mapping(source = "industries", target = "industries")
+    @Mapping(source = "users", target = "users")
     CompanyDTO.CompanyResponse toCompanyResponse(Company company);
 
     @Mapping(source = "industries", target = "industries")
