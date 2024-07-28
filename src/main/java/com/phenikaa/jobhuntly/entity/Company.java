@@ -58,7 +58,7 @@ public class Company {
     private Set<Job> jobs;
 
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private Set<ChatRoom> chatRoom;
+    private Set<ChatRoom> chatRooms;
 
     @ManyToMany
     @JoinTable(
