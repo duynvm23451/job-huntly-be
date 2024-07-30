@@ -23,6 +23,7 @@ public class ChatDto {
     public record MessageResponse(
             Integer id,
             UserDTO.UserResponse user,
-            String content
+            String content,
+            String createdAt
     ) {}
 }

@@ -3,6 +3,7 @@ package com.phenikaa.jobhuntly.chat;
 import com.phenikaa.jobhuntly.entity.*;
 import com.phenikaa.jobhuntly.enums.Role;
 import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
+import com.phenikaa.jobhuntly.exception.SharedException;
 import com.phenikaa.jobhuntly.repository.ChatRoomRepository;
 import com.phenikaa.jobhuntly.repository.CompanyRepository;
 import com.phenikaa.jobhuntly.repository.MessageRepository;
@@ -58,7 +59,7 @@ public class ChatService {
         return chatRoomRepository.findAll(specification, pageable);
     }
 
-    public List<Message> getMessagesList(Integer chatRoomId, User user) {
+    public Page<Message> getMessagesList(Integer chatRoomId, User user, Pageable pageable) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new ObjectNotFoundException("Phòng chat", chatRoomId)
         );
@@ -69,7 +70,10 @@ public class ChatService {
             chatRoom.setIsCompanySeen(true);
         }
         chatRoomRepository.save(chatRoom);
-        return messageRepository.findByChatRoomId(chatRoomId);
+        Specification<Message> specification = Specification.where((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("chatRoom").get("id"), chatRoomId));
+
+        return messageRepository.findAll(specification, pageable);
     }
 
     public ChatRoom createChatRoom(User user, Integer destinationId) {
@@ -113,5 +117,22 @@ public class ChatService {
             }
         }
         return chatRoomRepository.save(chatRoom);
+    }
+
+    public ChatRoom getChatRoomById(User user, Integer chatRoomId) {
+        ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
+                () -> new ObjectNotFoundException("Phòng chat", chatRoomId)
+        );
+        if (user.getRole() == Role.EMPLOYEE) {
+            if (!chatRoom.getUser().equals(user)) {
+                throw new SharedException("Tài khoản không có quyền truy cập vào phòng chat này");
+            }
+        }
+        if (user.getRole() == Role.RECRUITER) {
+            if (!chatRoom.getCompany().equals(user.getCompany())) {
+                throw new SharedException("Tài khoản không có quyền truy cập vào phòng chat này");
+            }
+        }
+        return chatRoom;
     }
 }
