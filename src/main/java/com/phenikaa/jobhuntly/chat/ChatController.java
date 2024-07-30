@@ -42,7 +42,10 @@ public class ChatController {
 
     @MessageMapping("/chat")
     public void sendMessage(@Payload ChatDto.ChatRequest chatRequest) {
-        try {;
+        try {
+            System.out.println(chatRequest.chatRoomId());
+            System.out.println(chatRequest.message());
+            System.out.println(chatRequest.loggedInUserId());
             chatService.sendMessage(chatRequest.chatRoomId() ,chatRequest.message(), chatRequest.loggedInUserId());
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
@@ -89,13 +92,24 @@ public class ChatController {
 
     }
 
-    @GetMapping("messages/{chatRoomId}")
-    public ResponseDTO getMessages(@PathVariable Integer chatRoomId, @AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("chatRooms/{chatRoomId}")
+    public ResponseDTO getChatRoom(@AuthenticationPrincipal Jwt jwt, @PathVariable Integer chatRoomId) {
         User user = userService.getUser(jwt.getClaim("email"));
-        List<Message> messages = chatService.getMessagesList(chatRoomId, user);
-        List<ChatDto.MessageResponse> response = messages.stream()
-                .map(messageMapper::toMessageResponse)
-                .toList();
+        ChatRoom chatRoom = chatService.getChatRoomById(user, chatRoomId);
+        ChatDto.ChatRoomResponse chatRoomResponse = chatRoomMapper.toChatRoomResponse(chatRoom);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Lấy thông tin phòng chat theo Id thành công")
+                .code(HttpStatus.OK.value())
+                .data(chatRoomResponse)
+                .build();
+    }
+
+    @GetMapping("messages/{chatRoomId}")
+    public ResponseDTO getMessages(@PathVariable Integer chatRoomId, @AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+        User user = userService.getUser(jwt.getClaim("email"));
+        Page<Message> messages = chatService.getMessagesList(chatRoomId, user, pageable);
+        Page<ChatDto.MessageResponse> response = messages.map(messageMapper::toMessageResponse);
         return ResponseDTO.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())
