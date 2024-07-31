@@ -36,3 +36,16 @@ outbound:
     grant-type: authorization_code
 
 client-url: ${FRONTEND_URL}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_ACCESSKEY}
+      secret-key: ${AWS_SECRETKEY}
+    stack:
+      auto: false
+    region:
+      static: ${AWS_REGION}
+app:
+  s3:
+    bucket: ${AWS_BUCKET_NAME}

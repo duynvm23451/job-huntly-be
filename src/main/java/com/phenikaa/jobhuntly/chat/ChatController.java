@@ -46,10 +46,12 @@ public class ChatController {
             System.out.println(chatRequest.chatRoomId());
             System.out.println(chatRequest.message());
             System.out.println(chatRequest.loggedInUserId());
-            chatService.sendMessage(chatRequest.chatRoomId() ,chatRequest.message(), chatRequest.loggedInUserId());
+            Message message = chatService.sendMessage(chatRequest.chatRoomId() ,chatRequest.message(), chatRequest.loggedInUserId());
+            ChatDto.MessageResponse response = messageMapper.toMessageResponse(message);
             ResponseDTO responseDTO = ResponseDTO.builder()
                     .success(true)
                     .code(HttpStatus.OK.value())
+                    .data(response)
                     .message("Gửi tin nhắn thành công")
                     .build();
             messagingTemplate.convertAndSend("/topic/messages", responseDTO);

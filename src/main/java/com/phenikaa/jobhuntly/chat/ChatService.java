@@ -27,7 +27,7 @@ public class ChatService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
 
-    public void sendMessage(Integer chatRoomId, String message, Integer loggedInUserId) {
+    public Message sendMessage(Integer chatRoomId, String message, Integer loggedInUserId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new ObjectNotFoundException("Phòng chat", chatRoomId)
         );
@@ -38,7 +38,7 @@ public class ChatService {
         newMessage.setChatRoom(chatRoom);
         newMessage.setUser(user);
         newMessage.setContent(message);
-        messageRepository.save(newMessage);
+        return messageRepository.save(newMessage);
 
     }
 
