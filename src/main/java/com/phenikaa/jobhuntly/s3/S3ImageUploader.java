@@ -1,6 +1,8 @@
 package com.phenikaa.jobhuntly.s3;
 
+import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
@@ -11,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -34,23 +38,38 @@ public class S3ImageUploader implements ImageUploader {
 
         ObjectMetadata metadata = new ObjectMetadata();
         metadata.setContentLength(image.getSize());
+        metadata.setContentType(image.getContentType());
         try {
             PutObjectResult putObjectResult = s3.putObject(
                     new PutObjectRequest(bucketName, fileName, image.getInputStream(), metadata)
             );
-            return fileName;
+            return this.preSignedUrl(fileName);
         } catch (IOException e) {
             throw new SharedException("Xảy ra lỗi khi upload ảnh: " + e.getMessage());
         }
     }
 
     @Override
-    public List<String> allFiles() {
-        return List.of();
+    public String getImageUrl(String fileName) {
+
+        return preSignedUrl(fileName);
     }
 
     @Override
-    public String preSignedUrl() {
-        return "";
+    public String preSignedUrl(String fileName) {
+
+        Date expirationDate = new Date();
+
+        long time = expirationDate.getTime();
+        int hour = 2;
+        time= time + hour *  60 * 60 * 1000;
+        expirationDate.setTime(time);
+
+        GeneratePresignedUrlRequest generatePresignedUrlRequest =  new GeneratePresignedUrlRequest(bucketName, fileName)
+                .withMethod(HttpMethod.GET)
+                .withExpiration(expirationDate);
+        URL url = s3.generatePresignedUrl(generatePresignedUrlRequest);
+        return url.toString();
     }
+
 }
