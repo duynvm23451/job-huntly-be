@@ -8,7 +8,7 @@ public interface ImageUploader {
 
     String upload(MultipartFile image);
 
-    List<String> allFiles();
+    String getImageUrl(String fileName);
 
     String preSignedUrl(String fileName);
 }
