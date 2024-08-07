@@ -72,7 +72,7 @@ public class AuthService {
         return userRepository.save(user);
     }
 
-    public ExchangeTokenDTO.ExchangeTokenResponse outboundAuthenticate(String code, String role) {
+    public Map<String, Object> outboundAuthenticate(String code, String role) {
 
         ExchangeTokenDTO.ExchangeTokenResponse response = outboundClient.exchangeToken(
                 ExchangeTokenDTO.ExchangeTokenRequest.builder()
@@ -83,6 +83,7 @@ public class AuthService {
                         .grantType(GRANT_TYPE)
                         .build()
         );
+        System.out.println("Duy: " + response);
 
         OutboundUserResponse userInfo = outboundUserClient.getUserInfo("json", response.accessToken());
         User user = userRepository.findUserByEmail(userInfo.email()).orElseGet(
@@ -93,7 +94,16 @@ public class AuthService {
                         .isEnable(true)
                         .build())
         );
-        return response;
+        String token = jwtProvider.generateToken(user);
+        System.out.println("Duy: " + token);
+
+        AuthDTO.UserLoginResponse userLoginResponse = authMapper.toUserLoginResponse(user);
+
+        Map<String, Object> authenticateResultMap = new HashMap<>();
+        authenticateResultMap.put("user", userLoginResponse);
+        authenticateResultMap.put("token", token);
+
+        return authenticateResultMap;
     }
 
 }
