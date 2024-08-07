@@ -98,7 +98,7 @@ public class AuthController {
 
     @PostMapping("/outbound/authentication")
     public ResponseDTO outboundAuthenticate(@RequestParam("code") String code, @RequestParam("role") String role) {
-        ExchangeTokenDTO.ExchangeTokenResponse response = authService.outboundAuthenticate(code, role);
+        Map<String, Object> response = authService.outboundAuthenticate(code, role);
         return ResponseDTO.builder()
                 .success(true)
                 .code(HttpStatus.OK.value())

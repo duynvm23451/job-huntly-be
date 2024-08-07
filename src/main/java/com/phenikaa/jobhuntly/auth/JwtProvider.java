@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.auth;
 
+import com.phenikaa.jobhuntly.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
@@ -35,6 +36,22 @@ public class JwtProvider {
                 .claim("email", user.getUsername())
                 .claim("scope", scope)
                 .claim("userId", user.getUserId())
+                .build();
+
+        return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
+    }
+
+    public String generateToken(User user) {
+        Instant now = Instant.now();
+        String scope = user.getRole().toString();
+
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plus(10, ChronoUnit.HOURS))
+                .claim("email", user.getEmail())
+                .claim("scope", scope)
+                .claim("userId", user.getId())
                 .build();
 
         return jwtEncoder.encode(JwtEncoderParameters.from(claims)).getTokenValue();
