@@ -21,7 +21,8 @@ public class UserDTO {
             String phoneNumber,
             Gender gender,
             String typeNotificationAccept,
-            String address
+            String address,
+            CompanyDTO.ListCompanyResponse company
     ) {
     }
 }

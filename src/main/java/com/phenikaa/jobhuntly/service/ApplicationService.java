@@ -75,4 +75,16 @@ public class ApplicationService {
         LocalDateTime currentTime = LocalDateTime.now();
         return applicationRepository.findByUserIdAndStatusAndInterviewTimeBefore(userId, ApplicationStatus.INTERVIEWING, currentTime, pageable);
     }
+
+    public Page<Application> getApplicants(Integer userId, Pageable pageable) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException("Người dùng", userId)
+        );
+        if (user.getCompany() == null) {
+            throw new SharedException("Người dùng chưa thuộc công ty nào!!!");
+        }
+        Specification<Application> specification = Specification.where(null);
+        specification = specification.and(ApplicationSpecification.byCompanyId(user.getCompany().getId()));
+        return applicationRepository.findAll(specification, pageable);
+    }
 }
