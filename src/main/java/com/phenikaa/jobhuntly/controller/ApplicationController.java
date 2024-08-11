@@ -74,4 +74,19 @@ public class ApplicationController {
                 .data(responses)
                 .build();
     }
+
+    @GetMapping("/applications/companies")
+    public ResponseDTO getCompanyApplicants(@AuthenticationPrincipal Jwt jwt, Pageable pageable) {
+        Long userIdLong = jwt.getClaim("userId");
+        Integer userId = userIdLong.intValue();
+        Page<Application> applications = applicationService.getApplicants(userId, pageable);
+        Page<ApplicationDto.ApplicationResponse> responses = applications.map(applicationMapper::toApplicationResponse);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Lấy các đơn ứng tuyển thành công")
+                .code(HttpStatus.OK.value())
+                .data(responses)
+                .build();
+    }
+
 }
