@@ -14,6 +14,10 @@ public class ApplicationSpecification {
         return (root, query, cb) -> cb.equal(root.join("job").join("company").get("id"), companyId);
     }
 
+    public static Specification<Application> byJobId(final Integer jobId) {
+        return (root, query, cb) -> cb.equal(root.join("job").get("id"), jobId);
+    }
+
     public static Specification<Application> hasStatus(ApplicationStatus status) {
         return (root, query, cb) -> cb.equal(root.get("status"), status);
     }

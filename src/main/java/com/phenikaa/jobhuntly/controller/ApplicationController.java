@@ -89,4 +89,16 @@ public class ApplicationController {
                 .build();
     }
 
+    @GetMapping("/applications/jobs/{jobId}")
+    public ResponseDTO fetchApplicationsByJobId(@AuthenticationPrincipal Jwt jwt, @PathVariable int jobId, Pageable pageable) {
+        Long userIdLong = jwt.getClaim("userId");
+        Integer userId = userIdLong.intValue();
+        Page<Application> applications = applicationService.getApplicationsByJobId(userId, jobId, pageable);
+        Page<ApplicationDto.ApplicationResponse> responses = applications.map(applicationMapper::toApplicationResponse);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("lấy các đơn ứng tuyển thành công")
+                .data(responses)
+                .build();
+    }
 }
