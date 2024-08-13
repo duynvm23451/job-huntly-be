@@ -87,4 +87,22 @@ public class ApplicationService {
         specification = specification.and(ApplicationSpecification.byCompanyId(user.getCompany().getId()));
         return applicationRepository.findAll(specification, pageable);
     }
+
+    public Page<Application> getApplicationsByJobId(Integer userId, int jobId, Pageable pageable) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new ObjectNotFoundException("Người dùng", userId)
+        );
+        if (user.getCompany() == null) {
+            throw new SharedException("Người dùng chưa thuộc công ty nào!!!");
+        }
+        Job job = jobRepository.findById(jobId).orElseThrow(
+                () -> new ObjectNotFoundException("Công việc", jobId)
+        );
+        if (!Objects.equals(user.getCompany().getId(), job.getCompany().getId())) {
+            throw new SharedException("Bạn không có quyền xem đơn ứng tuyển của công việc này");
+        }
+        Specification<Application> specification = Specification.where(null);
+        specification = specification.and(ApplicationSpecification.byJobId(jobId));
+        return applicationRepository.findAll(specification, pageable);
+    }
 }
