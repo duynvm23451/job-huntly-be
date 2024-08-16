@@ -24,8 +24,6 @@ public class Message {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private String file_name;
-
     @ManyToOne
     @JoinColumn(name = "chat_room_id")
     private ChatRoom chatRoom;
