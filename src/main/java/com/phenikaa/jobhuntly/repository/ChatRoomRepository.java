@@ -13,4 +13,6 @@ import java.util.Optional;
 public interface ChatRoomRepository extends JpaRepository<ChatRoom, Integer>, JpaSpecificationExecutor<ChatRoom> {
     Optional<ChatRoom> findByCompanyAndUser(Company company, User user);
 
+    int countByCompanyAndIsCompanySeen(Company company, Boolean isCompanySeen);
+
 }

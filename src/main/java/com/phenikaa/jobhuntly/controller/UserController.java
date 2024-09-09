@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.controller;
 
+import com.phenikaa.jobhuntly.dto.CompanyDTO;
 import com.phenikaa.jobhuntly.dto.ResponseDTO;
 import com.phenikaa.jobhuntly.dto.UserDTO;
 import com.phenikaa.jobhuntly.entity.User;
@@ -7,12 +8,14 @@ import com.phenikaa.jobhuntly.mapper.UserMapper;
 import com.phenikaa.jobhuntly.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.text.ParseException;
 import java.util.List;
 
 @RestController
@@ -42,6 +45,19 @@ public class UserController {
                 .success(true)
                 .message("Lấy thông tin người dùng thành công")
                 .data(response)
+                .build();
+    }
+
+    @PostMapping("/users")
+    public ResponseDTO update(@AuthenticationPrincipal Jwt jwt, UserDTO.UserRequest userRequest) throws ParseException {
+        Long userIdLong = jwt.getClaim("userId");
+        Integer userId = userIdLong.intValue();
+        UserDTO.UserResponse userResponse = userService.update(userRequest, userId);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Tạo/thay đổi công ty thành công")
+                .code(HttpStatus.CREATED.value())
+                .data(userResponse)
                 .build();
     }
 }

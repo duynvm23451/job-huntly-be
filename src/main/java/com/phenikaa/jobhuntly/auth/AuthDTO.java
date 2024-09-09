@@ -13,8 +13,8 @@ public class AuthDTO {
     public record RegisterRequest(
             @Email(message = "Email không nhập đúng định dạng")
             String email,
-            @NotNull(message = "Username không được để trống")
-            String username,
+            @NotNull(message = "Họ và tên không được để trống")
+            String fullName,
             @NotNull(message = "Mật khẩu không được để trống")
             String password,
             @NotNull(message = "Mật khẩu xác nhận không được để trống")

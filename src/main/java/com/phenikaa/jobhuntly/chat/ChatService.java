@@ -10,7 +10,9 @@ import com.phenikaa.jobhuntly.repository.MessageRepository;
 import com.phenikaa.jobhuntly.repository.UserRepository;
 import com.phenikaa.jobhuntly.specification.ChatRoomSpecification;
 import com.phenikaa.jobhuntly.specification.filter.ChatRoomFilter;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -27,6 +29,7 @@ public class ChatService {
     private final UserRepository userRepository;
     private final CompanyRepository companyRepository;
 
+    @Transactional
     public Message sendMessage(Integer chatRoomId, String message, Integer loggedInUserId) {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new ObjectNotFoundException("Phòng chat", chatRoomId)
@@ -34,6 +37,16 @@ public class ChatService {
         User user = userRepository.findById(loggedInUserId).orElseThrow(
                 () -> new ObjectNotFoundException("Người dùng", loggedInUserId)
         );
+
+        if (user.getRole() == Role.EMPLOYEE) {
+            chatRoom.setIsCompanySeen(false);
+            chatRoom.setIsUserSeen(true);
+        }
+        else {
+            chatRoom.setIsCompanySeen(true);
+            chatRoom.setIsUserSeen(false);
+        }
+        chatRoomRepository.save(chatRoom);
         Message newMessage = new Message();
         newMessage.setChatRoom(chatRoom);
         newMessage.setUser(user);
@@ -63,13 +76,6 @@ public class ChatService {
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId).orElseThrow(
                 () -> new ObjectNotFoundException("Phòng chat", chatRoomId)
         );
-        if (user.getRole() == Role.EMPLOYEE) {
-            chatRoom.setIsUserSeen(true);
-        }
-        if (user.getRole() == Role.RECRUITER) {
-            chatRoom.setIsCompanySeen(true);
-        }
-        chatRoomRepository.save(chatRoom);
         Specification<Message> specification = Specification.where((root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("chatRoom").get("id"), chatRoomId));
 
@@ -78,6 +84,7 @@ public class ChatService {
 
     public ChatRoom createChatRoom(User user, Integer destinationId) {
         ChatRoom chatRoom = null;
+        System.out.println(destinationId);
         AtomicBoolean isExisting = new AtomicBoolean(true);
         if (user.getRole() == Role.EMPLOYEE) {
             Company company = companyRepository.findById(destinationId).orElseThrow(

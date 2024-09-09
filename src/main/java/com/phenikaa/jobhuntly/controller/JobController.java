@@ -3,12 +3,15 @@ package com.phenikaa.jobhuntly.controller;
 import com.phenikaa.jobhuntly.dto.JobDTO;
 import com.phenikaa.jobhuntly.dto.ResponseDTO;
 import com.phenikaa.jobhuntly.entity.Job;
+import com.phenikaa.jobhuntly.repository.JobRepository;
 import com.phenikaa.jobhuntly.service.JobService;
 import com.phenikaa.jobhuntly.specification.filter.JobFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -49,6 +52,19 @@ public class JobController {
                 .message("Lấy các công việc từ Id của công ty thành công")
                 .code(HttpStatus.OK.value())
                 .data(jobResponses)
+                .build();
+    }
+
+    @PostMapping
+    public ResponseDTO createJob(@AuthenticationPrincipal Jwt jwt, @RequestBody JobDTO.JobRequest jobRequest) {
+        Long userIdLong = jwt.getClaim("userId");
+        Integer userId = userIdLong.intValue();
+        JobDTO.JobResponse jobResponse = jobService.createJob(userId, jobRequest);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Tạo mới công việc thành công")
+                .code(HttpStatus.CREATED.value())
+                .data(jobResponse)
                 .build();
     }
 }

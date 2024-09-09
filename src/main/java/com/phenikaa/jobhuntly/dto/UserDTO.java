@@ -2,6 +2,7 @@ package com.phenikaa.jobhuntly.dto;
 
 import com.phenikaa.jobhuntly.enums.Gender;
 import com.phenikaa.jobhuntly.enums.Role;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Date;
 import java.util.List;
@@ -12,8 +13,11 @@ public class UserDTO {
             String username,
             String email,
             String avatarFileName,
+            String avatarUrl,
             String coverFileName,
+            String coverUrl,
             String resumeFileName,
+            String resumeUrl,
             String aboutMe,
             String fullName,
             Role role,
@@ -22,7 +26,21 @@ public class UserDTO {
             Gender gender,
             String typeNotificationAccept,
             String address,
-            CompanyDTO.ListCompanyResponse company
+            CompanyDTO.ListCompanyResponse company,
+            Date createdAt
     ) {
     }
+
+    public record UserRequest(
+            String fullName,
+            String phoneNumber,
+            String dateOfBirth,
+            String gender,
+            String aboutMe,
+            String address,
+            MultipartFile avatarFileName,
+            MultipartFile coverFileName ,
+            MultipartFile resumeFileName
+
+    ) {}
 }

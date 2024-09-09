@@ -3,6 +3,7 @@ package com.phenikaa.jobhuntly.controller;
 import com.phenikaa.jobhuntly.dto.ApplicationDto;
 import com.phenikaa.jobhuntly.dto.ResponseDTO;
 import com.phenikaa.jobhuntly.entity.Application;
+import com.phenikaa.jobhuntly.enums.ApplicationStatus;
 import com.phenikaa.jobhuntly.mapper.ApplicationMapper;
 import com.phenikaa.jobhuntly.service.ApplicationService;
 import com.phenikaa.jobhuntly.specification.filter.ApplicationFilter;
@@ -14,6 +15,8 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -99,6 +102,30 @@ public class ApplicationController {
                 .success(true)
                 .message("lấy các đơn ứng tuyển thành công")
                 .data(responses)
+                .build();
+    }
+
+    @GetMapping("/applications/{id}")
+    public ResponseDTO getApplicationById(@AuthenticationPrincipal Jwt jwt, @PathVariable int id) {
+
+
+        ApplicationDto.ApplicationResponse response = applicationService.getApplicationsById(id);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Lấy thông tin chi tiết đơn ứng tuyển thành công")
+                .code(HttpStatus.OK.value())
+                .data(response)
+                .build();
+    }
+
+    @PutMapping("/applications/{id}")
+    public ResponseDTO updateApplicationStatus(@PathVariable int id, String status, Timestamp interviewTime) {
+        ApplicationDto.ApplicationResponse applicationResponse = applicationService.updateApplication(id, status, interviewTime);
+        return ResponseDTO.builder()
+                .success(true)
+                .message("Cập nhật trạng thái đơn ứng tuyển thành công")
+                .code(HttpStatus.OK.value())
+                .data(applicationResponse)
                 .build();
     }
 }

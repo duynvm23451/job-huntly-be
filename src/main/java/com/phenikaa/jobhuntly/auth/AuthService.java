@@ -73,7 +73,7 @@ public class AuthService {
     }
 
     public Map<String, Object> outboundAuthenticate(String code, String role) {
-
+        System.out.println(role);
         ExchangeTokenDTO.ExchangeTokenResponse response = outboundClient.exchangeToken(
                 ExchangeTokenDTO.ExchangeTokenRequest.builder()
                         .code(code)
@@ -89,7 +89,7 @@ public class AuthService {
         User user = userRepository.findUserByEmail(userInfo.email()).orElseGet(
                 () -> userRepository.save(User.builder()
                         .email(userInfo.email())
-                        .username(userInfo.familyName() + " " + userInfo.givenName())
+                        .fullName(userInfo.familyName() + " " + userInfo.givenName())
                         .role(Role.valueOf(role))
                         .isEnable(true)
                         .build())

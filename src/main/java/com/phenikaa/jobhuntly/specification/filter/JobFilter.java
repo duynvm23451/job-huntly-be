@@ -11,9 +11,9 @@ import java.util.List;
 public class JobFilter {
     private String title;
     private String location;
-    private List<Integer> types;
+    private List<String> types;
     private List<String> categories;
-    private List<Integer> levels;
+    private List<String> levels;
     private Integer minSalary;
     private Integer maxSalary;
 }

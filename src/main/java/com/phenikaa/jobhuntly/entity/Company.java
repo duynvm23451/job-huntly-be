@@ -1,6 +1,7 @@
 package com.phenikaa.jobhuntly.entity;
 
 import jakarta.persistence.*;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
@@ -18,6 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Table(name = "companies")
+@Transactional
 public class Company {
 
     @Id

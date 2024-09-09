@@ -5,7 +5,7 @@ import com.phenikaa.jobhuntly.entity.Application;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = JobMapper.class)
+@Mapper(componentModel = "spring", uses = {UserMapper.class, JobMapper.class})
 public interface ApplicationMapper {
     ApplicationDto.ApplicationResponse toApplicationResponse(Application application);
 }
