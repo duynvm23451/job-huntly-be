@@ -1,5 +1,6 @@
 package com.phenikaa.jobhuntly.service;
 
+import com.phenikaa.jobhuntly.dto.ApplicationDto;
 import com.phenikaa.jobhuntly.entity.Application;
 import com.phenikaa.jobhuntly.entity.Job;
 import com.phenikaa.jobhuntly.entity.User;
@@ -7,6 +8,7 @@ import com.phenikaa.jobhuntly.enums.ApplicationStatus;
 import com.phenikaa.jobhuntly.enums.Role;
 import com.phenikaa.jobhuntly.exception.ObjectNotFoundException;
 import com.phenikaa.jobhuntly.exception.SharedException;
+import com.phenikaa.jobhuntly.mapper.ApplicationMapper;
 import com.phenikaa.jobhuntly.repository.ApplicationRepository;
 import com.phenikaa.jobhuntly.repository.JobRepository;
 import com.phenikaa.jobhuntly.repository.UserRepository;
@@ -19,7 +21,10 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -28,6 +33,7 @@ public class ApplicationService {
     private final JobRepository jobRepository;
     private final UserRepository userRepository;
     private final ApplicationRepository applicationRepository;
+    private final ApplicationMapper applicationMapper;
 
     public Application createApplication(Integer jobId, Integer userId) {
         Job job = jobRepository.findById(jobId).orElseThrow(
@@ -37,13 +43,14 @@ public class ApplicationService {
                 () -> new ObjectNotFoundException("Người dùng", userId)
         );
         if (user.getRole() != Role.EMPLOYEE) {
-            throw new AccessDeniedException("Chỉ ứng viên mới có thể ứng tuyển");
+            throw new SharedException("Chỉ ứng viên mới có thể ứng tuyển");
         }
+
         Optional<Application> existingApplication = applicationRepository.findByJobIdAndUserId(jobId, userId);
         if (existingApplication.isPresent()) {
             throw new SharedException("Bạn đã ứng tuyển công việc này rồi");
         }
-        int numberOfApplicantForJob = applicationRepository.countByJobId(jobId);
+        int numberOfApplicantForJob = applicationRepository.findByJobAndStatus(job, ApplicationStatus.HIRED).size();
         if (numberOfApplicantForJob >= job.getNumberOfRecruits()) {
             throw new SharedException("Công việc này đã tuyển đủ số người");
         }
@@ -72,8 +79,9 @@ public class ApplicationService {
     }
 
     public Page<Application> getLatestInterviewing(Integer userId, Pageable pageable) {
-        LocalDateTime currentTime = LocalDateTime.now();
-        return applicationRepository.findByUserIdAndStatusAndInterviewTimeBefore(userId, ApplicationStatus.INTERVIEWING, currentTime, pageable);
+        Specification<Application> specification = Specification.where(null);
+        specification = specification.and(ApplicationSpecification.closestToNowAndGreaterThanNow());
+        return applicationRepository.findAll(specification, pageable);
     }
 
     public Page<Application> getApplicants(Integer userId, Pageable pageable) {
@@ -104,5 +112,31 @@ public class ApplicationService {
         Specification<Application> specification = Specification.where(null);
         specification = specification.and(ApplicationSpecification.byJobId(jobId));
         return applicationRepository.findAll(specification, pageable);
+    }
+
+    public ApplicationDto.ApplicationResponse getApplicationsById(int id) {
+        Application application = applicationRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException("Đơn ứng tuyển", id)
+        );
+        return applicationMapper.toApplicationResponse(application);
+    }
+
+    public ApplicationDto.ApplicationResponse updateApplication(int id, String status, Timestamp interviewTime) {
+        System.out.println(id);
+        System.out.println(status);
+        System.out.println(interviewTime);
+        Application application = applicationRepository.findById(id).orElseThrow(
+                () -> new ObjectNotFoundException("Đơn ứng tuyển", id)
+        );
+
+        if (ApplicationStatus.valueOf(status) == ApplicationStatus.INTERVIEWING && interviewTime == null) {
+            throw new SharedException("Vui lòng chọn thời gian phỏng vấn");
+        }
+
+        application.setStatus(ApplicationStatus.valueOf(status));
+        if (interviewTime != null) {
+            application.setInterviewTime(interviewTime);
+        }
+        return applicationMapper.toApplicationResponse(applicationRepository.save(application));
     }
 }

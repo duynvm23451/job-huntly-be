@@ -71,6 +71,12 @@ public class User {
 
     private String address;
 
+    private String linkedinLink;
+
+    private String twitterLink;
+
+    private String facebookLink;
+
     @ManyToOne
     @JoinColumn(name="company_id")
     private Company company;

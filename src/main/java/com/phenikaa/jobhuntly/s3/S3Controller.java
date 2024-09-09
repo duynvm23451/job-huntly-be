@@ -10,14 +10,14 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class S3Controller {
 
-    private final ImageUploader uploader;
+    private final S3ImageUploader s3ImageUploader;
 
     @PostMapping
     public ResponseDTO uploadImage(@RequestParam MultipartFile file) {
         return ResponseDTO.builder()
                 .success(true)
                 .message("Tải ảnh thành công")
-                .data(uploader.upload(file))
+                .data(s3ImageUploader.upload(file))
                 .build();
     }
 
@@ -26,7 +26,7 @@ public class S3Controller {
         return ResponseDTO.builder()
                 .success(true)
                 .message("Lấy link ảnh thành công")
-                .data(uploader.getImageUrl(fileName))
+                .data(s3ImageUploader.getImageUrl(fileName))
                 .build();
     }
 }

@@ -21,17 +21,10 @@ import java.util.Optional;
 public interface ApplicationRepository extends JpaRepository<Application, Integer>, JpaSpecificationExecutor<Application> {
     Optional<Application> findByJobIdAndUserId(Integer jobId, Integer userId);
 
-    @Query(value = "SELECT COUNT(*) FROM applications a WHERE a.job_id = :jobId AND a.status <> 'CANCELLED'", nativeQuery = true)
-    int countByJobId(@Param("jobId") Integer jobId);
-
     @Query(value = "SELECT COUNT(*) as total, SUM(IF(a.status = 'INTERVIEWING', 1, 0)) as interviewing FROM applications a WHERE a.user_id = :userId", nativeQuery = true)
     Map<String, Integer> countAllAndByStatus(@Param("userId") Integer userId);
 
-    @Query("SELECT a FROM Application as a WHERE a.user.id = :userId AND a.status = :status AND a.interviewTime <= :current")
-    Page<Application> findByUserIdAndStatusAndInterviewTimeBefore(
-            @Param("userId") Integer userId,
-            @Param("status") ApplicationStatus status,
-            @Param("current") LocalDateTime current,
-            Pageable pageable
-    );
+    int countByUserIdAndStatus(Integer userId, ApplicationStatus status);
+
+    List<Application> findByJobAndStatus(Job job, ApplicationStatus status);
 }

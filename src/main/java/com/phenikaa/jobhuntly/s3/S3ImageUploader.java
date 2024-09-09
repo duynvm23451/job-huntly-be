@@ -20,14 +20,13 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class S3ImageUploader implements ImageUploader {
+public class S3ImageUploader  {
 
     private final AmazonS3 s3;
 
     @Value("${app.s3.bucket}")
     private String bucketName;
 
-    @Override
     public String upload(MultipartFile image) {
         if (image == null) {
             throw new SharedException("không có ảnh nào được tải lên!!!");
@@ -43,19 +42,17 @@ public class S3ImageUploader implements ImageUploader {
             PutObjectResult putObjectResult = s3.putObject(
                     new PutObjectRequest(bucketName, fileName, image.getInputStream(), metadata)
             );
-            return this.preSignedUrl(fileName);
+            return fileName;
         } catch (IOException e) {
             throw new SharedException("Xảy ra lỗi khi upload ảnh: " + e.getMessage());
         }
     }
 
-    @Override
     public String getImageUrl(String fileName) {
 
         return preSignedUrl(fileName);
     }
 
-    @Override
     public String preSignedUrl(String fileName) {
 
         Date expirationDate = new Date();
